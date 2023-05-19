@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live sports</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css" />
+</head>
+<body>
+    <video id="player" controls></video>
+    <div id="playlist">
+        <h3>Live Sports</h3>
+        <ul id="playlist-links">
+            <!-- Add your M3U8 links here -->
+            <li><a href="https://prod-sports-north-gm.jiocinema.com/bpk-tv/M1_IPL23_Hin_HD_IDC_AND/Fallback/index.m3u8">IPL Bangla</a></li>
+            <li><a href="https://prod-sports-north-gm.jiocinema.com/bpk-tv/M1_IPL23_Hin_HD_IDC_AND/Fallback/index.m3u8">IPL Himdi</a></li>
+            <li><a href="https://prod-sports-north-gm.jiocinema.com/bpk-tv/M1_IPL23_Hin_HD_IDC_AND/Fallback/index.m3u8">IPL English</a></li>
+        </ul>
+    </div>
+
+    <script src="https://cdn.plyr.io/3.6.8/plyr.js"></script>
+    <script>
+        var playlistLinks = document.querySelectorAll('#playlist-links a');
+        var player = new Plyr('#player');
+
+        function playVideo(url) {
+            player.source = {
+                type: 'video',
+                sources: [{
+                    src: url,
+                    type: 'application/x-mpegURL'
+                }]
+            };
+            player.play();
+        }
+
+        var currentIndex = 0;
+
+        function playNextVideo() {
+            currentIndex++;
+            if (currentIndex >= playlistLinks.length) {
+                currentIndex = 0;
+            }
+            var nextLink = playlistLinks[currentIndex].getAttribute('href');
+            playVideo(nextLink);
+        }
+
+        playlistLinks.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                var url = this.getAttribute('href');
+                playVideo(url);
+            });
+        });
+
+        // Autoplay first video
+        if (playlistLinks.length > 0) {
+            var firstLink = playlistLinks[0].getAttribute('href');
+            playVideo(firstLink);
+        }
+
+        // Autoplay next video when the current one ends
+        player.on('ended', function () {
+            playNextVideo();
+        });
+    </script>
+</body>
+</html>
